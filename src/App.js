@@ -1,6 +1,6 @@
 // `https://api.frankfurter.app/latest?amount=100&from=EUR&to=USD`
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function App() {
   const [amount, setAmount] = useState(1);
@@ -8,6 +8,17 @@ export default function App() {
   const [toCurrency, setToCurrency] = useState("EUR");
   const [output, setOutput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
+  const inputEl = useRef(null);
+
+  useEffect(
+    function () {
+      if (!isLoading) {
+        inputEl.current.focus();
+      }
+    },
+    [isLoading]
+  );
 
   useEffect(
     function () {
@@ -42,6 +53,7 @@ export default function App() {
             value={amount}
             onChange={(e) => setAmount(Number(e.target.value))}
             disabled={isLoading}
+            ref={inputEl}
           />
           <select
             className="drop-down"
@@ -66,7 +78,9 @@ export default function App() {
             <option value="INR">INR</option>
           </select>
           <h2 className="heading output">
-            {Math.round(output * 100) / 100} {toCurrency}
+            {amount > 0
+              ? `${Math.round(output * 100) / 100} ${toCurrency}`
+              : `INVALID`}
           </h2>
         </div>
       </div>
